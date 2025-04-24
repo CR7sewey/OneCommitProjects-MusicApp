@@ -4,41 +4,63 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mike.musicapp.common.UI.DetailedDrawerExample2
+import com.mike.musicapp.common.modules.screens
+import com.mike.musicapp.home.HomeMVVM
 import com.mike.musicapp.ui.theme.MusicAppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MusicAppTheme {
-                Scaffold(
-                    topBar = { TopBar() },
-                    modifier = Modifier.fillMaxSize()
+                val navHostController = rememberNavController()
+                val scaffoldState: ScaffoldState = rememberScaffoldState()
+                val scope: CoroutineScope = rememberCoroutineScope()
+                val homeMVVM = viewModel<HomeMVVM>()
 
+                Scaffold(
+                    topBar = { TopBar(scaffoldState, scope, navHostController, homeMVVM.title.value) },
+                    scaffoldState = scaffoldState,
+                    drawerContent = {
+                        DetailedDrawerExample2(
+                            scaffoldState = scaffoldState,
+                            scope = scope,
+                            navHostController = navHostController,
+                        )
+                    },
+                    modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    Navigation(modifier = Modifier)
+                    Navigation(navHostController, modifier = Modifier)
                 }
             }
         }
@@ -47,45 +69,73 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(modifier: Modifier = Modifier) {
-    TopAppBar(
-        title = {
-                    Text(
-                        text = "Subscription",
-                        modifier = Modifier
-                    )
-        },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary
-        ),
-        navigationIcon = {
-            IconButton(
-                onClick = { },
-                modifier = Modifier.padding(start = 4.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile",
-                    tint = colorResource(id = R.color.white)
-                )
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = { },
-                modifier = Modifier.padding(end = 4.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "More",
-                    tint = colorResource(id = R.color.white)
-                )
-            }
+fun TopBar(
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    scope: CoroutineScope = rememberCoroutineScope(),
+    navHostController: NavHostController,
+    title: String = "Home",
+    modifier: Modifier = Modifier) {
 
-        },
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-        modifier = modifier
+        //val route by remember { mutableStateOf(navHostController.graph.route) }
+        fun getTitle(route: String?): String {
+            val s = screens.find { it.route == route }
+            return s?.title ?: "title"
+
+        }
+
+        TopAppBar(
+            title = {
+                Text(
+                    text = title,
+                    modifier = Modifier
+                )
+            },
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            navigationIcon = {
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            if (scaffoldState.drawerState.isClosed) {
+                                scaffoldState.drawerState.open()
+                               // drawerState.open()
+                            } else {
+                                scaffoldState.drawerState.close()
+                                //drawerState.close()
+
+                            }
+
+                        }
+
+
+                    }, // courotine method, suspend function
+                    modifier = Modifier.padding(start = 4.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Profile",
+                        tint = colorResource(id = R.color.white)
+                    )
+                }
+            },
+            actions = {
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.padding(end = 4.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "More",
+                        tint = colorResource(id = R.color.white)
+                    )
+                }
+
+            },
+            scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+            modifier = modifier
         )
 
 }
+
