@@ -1,6 +1,7 @@
 package com.mike.musicapp
 
 import android.util.Log
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ import com.mike.musicapp.home.HomeMVVM
 import com.mike.musicapp.home.HomeUI
 
 @Composable
-fun Navigation(navHostController: NavHostController = rememberNavController(), modifier: Modifier = Modifier) {
+fun Navigation(navHostController: NavHostController = rememberNavController(), paddingValues: PaddingValues, modifier: Modifier = Modifier) {
 
     val homeMVVM = viewModel<HomeMVVM>()
     val navGraph = navHostController.createGraph(
@@ -24,44 +25,61 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), m
     ) {
         composable(Screen.DrawerScreens.Home.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.Home.title)
+            homeMVVM.setScreen(Screen.DrawerScreens.Home)
             HomeUI(
                 texto = "Home",
+                navHostController = navHostController,
                 modifier = modifier
             )
         }
         composable(Screen.DrawerScreens.Account.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.Account.title)
+            homeMVVM.setScreen(Screen.DrawerScreens.Account)
             HomeUI(
                 texto = "Account",
+                navHostController = navHostController,
+
                 modifier = modifier
             )
         }
         composable(Screen.DrawerScreens.Subscription.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.Subscription.title)
+            homeMVVM.setScreen(Screen.DrawerScreens.Subscription)
             HomeUI(
                 texto = "Subscription",
+                navHostController = navHostController,
+
                 modifier = modifier
             )
         }
         composable(Screen.DrawerScreens.AddAccount.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.AddAccount.title)
+            homeMVVM.setScreen(Screen.DrawerScreens.AddAccount)
             Log.d("Navigation fafafa", "${homeMVVM.title.value}")
             HomeUI(
                 texto = "Add Account",
+                navHostController = navHostController,
+
                 modifier = modifier
             )
         }
         composable(Screen.DrawerScreens.Settings.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.Settings.title)
+            homeMVVM.setScreen(Screen.DrawerScreens.Settings)
             HomeUI(
                 texto = "Settings",
+                navHostController = navHostController,
+
                 modifier = modifier
             )
         }
         composable(Screen.DrawerScreens.HelpAndFeedback.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.HelpAndFeedback.title)
+            homeMVVM.setScreen(Screen.DrawerScreens.HelpAndFeedback)
             HomeUI(
                 texto = "Help and Feedback",
+                navHostController = navHostController,
+
                 modifier = modifier
             )
         }
@@ -71,7 +89,7 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), m
     NavHost(
         navController = navHostController,
         graph = navGraph,
-        modifier = modifier.padding(2.dp)
+        modifier = modifier.padding(paddingValues)
     )
 
 }

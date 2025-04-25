@@ -27,17 +27,23 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mike.musicapp.common.modules.Screen
+import com.mike.musicapp.home.HomeMVVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailedDrawerExample(
@@ -143,21 +149,28 @@ fun DetailedDrawerExample(
         content(PaddingValues(0.dp))
     }
 }
-
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailedDrawerExample2(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     scope: CoroutineScope = rememberCoroutineScope(),
     navHostController: NavHostController,
+    openDialog: MutableState<Boolean> = mutableStateOf(false)
     ) {
     //val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scrollState = rememberScrollState()
-    val isSelected = remember { mutableStateOf(Screen.DrawerScreens.Home.title) }
+    val homeMVVM= viewModel<HomeMVVM>()
+    // val isSelected = remember { mutableStateOf(homeMVVM.title.value) } it wont work with the dialog, only would change onItemClicked this state is not a state of a viewmodel
+    var isSelected = homeMVVM.title // already a state of a viewmodel
 
     fun onItemClicked(item: Screen.DrawerScreens) {
-        isSelected.value = item.title
-        navHostController.navigate(item.droute)
+        // isSelected.value = item.title
+        if (item.droute == Screen.DrawerScreens.AddAccount.droute) {
+            // open dialog
+            openDialog.value = true
+        }
+        else navHostController.navigate(item.droute)
         scope.launch {
             scaffoldState.drawerState.close()
         }
@@ -181,7 +194,7 @@ fun DetailedDrawerExample2(
                         selected = selected(Screen.DrawerScreens.Account)
                         ,
                         label = "Account",
-                        icon = Icons.Filled.AccountCircle,
+                        icon = Screen.DrawerScreens.Account.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = {
                             onItemClicked(Screen.DrawerScreens.Account)
                         }
@@ -189,7 +202,7 @@ fun DetailedDrawerExample2(
                     DrawerItem(
                         selected = selected(Screen.DrawerScreens.Subscription),
                         label = "Subscription",
-                        icon = Icons.Filled.AddCircle,
+                        icon = Screen.DrawerScreens.Subscription.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = { /* Handle click */
                             onItemClicked(Screen.DrawerScreens.Subscription)
                         }
@@ -197,7 +210,7 @@ fun DetailedDrawerExample2(
                     DrawerItem(
                         selected = selected(Screen.DrawerScreens.AddAccount),
                         label = "Add Account",
-                        icon = Icons.Filled.Person,
+                        icon = Screen.DrawerScreens.AddAccount.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = { /* Handle click */
                             onItemClicked(Screen.DrawerScreens.AddAccount)
                         }
@@ -209,7 +222,7 @@ fun DetailedDrawerExample2(
                     DrawerItem(
                         selected = selected(Screen.DrawerScreens.Home),
                         label = "Home",
-                        icon = Icons.Outlined.Home,
+                        icon = Screen.DrawerScreens.Home.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = { /* Handle click */
                             onItemClicked(Screen.DrawerScreens.Home)
                         }
@@ -221,7 +234,7 @@ fun DetailedDrawerExample2(
                     DrawerItem(
                         selected = selected(Screen.DrawerScreens.Settings),
                         label = "Settings",
-                        icon = Icons.Outlined.Settings,
+                        icon = Screen.DrawerScreens.Settings.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = { /* Handle click */
                             onItemClicked(Screen.DrawerScreens.Settings)
                         }
@@ -229,7 +242,7 @@ fun DetailedDrawerExample2(
                     DrawerItem(
                         selected = selected(Screen.DrawerScreens.HelpAndFeedback),
                         label = "Help and feedback",
-                        icon = Icons.AutoMirrored.Outlined.ExitToApp,
+                        icon = Screen.DrawerScreens.HelpAndFeedback.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = { /* Handle click */
                             onItemClicked(Screen.DrawerScreens.HelpAndFeedback)
                         }
@@ -244,7 +257,7 @@ fun DetailedDrawerExample2(
 fun DrawerItem(
     selected: Boolean,
     label: String,
-    icon: ImageVector,
+    icon: Painter,// ImageVector,// ImageVector,
     onItemClicked: () -> Unit,
     badge: String? = null,
     modifier: Modifier = Modifier
