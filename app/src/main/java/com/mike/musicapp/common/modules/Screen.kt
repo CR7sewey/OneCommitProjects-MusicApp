@@ -13,6 +13,12 @@ sealed class Screen(val route: String, val title: String = "") {
         object HelpAndFeedback : DrawerScreens("helpAndFeedback", "Help and Feedback", R.drawable.baseline_help_center_24 )
     }
 
+    sealed class BottomNavScreens(val broute: String, val btitle: String = "", @DrawableRes val icon: Int? = null) : Screen(broute, btitle) {
+        object Home : BottomNavScreens("home", "Home", R.drawable.baseline_home_filled_24)
+        object Library : BottomNavScreens("library", "Library", R.drawable.baseline_library_music_24)
+        object Browse : BottomNavScreens("browse", "Browse", R.drawable.baseline_apps_24)
+    }
+
 }
 
 val screens = listOf(
@@ -24,6 +30,12 @@ val screens = listOf(
     Screen.DrawerScreens.HelpAndFeedback
 )
 
+val bottomNavIcons = listOf(
+    Screen.BottomNavScreens.Home,
+    Screen.BottomNavScreens.Library,
+    Screen.BottomNavScreens.Browse
+)
+
 object Icons {
     val icons = listOf(
         R.drawable.baseline_settings_24,
@@ -33,4 +45,6 @@ object Icons {
         R.drawable.baseline_manage_accounts_24,
         R.drawable.baseline_help_center_24
         )
+
+
 }

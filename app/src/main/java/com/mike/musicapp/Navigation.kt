@@ -38,6 +38,7 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
             homeMVVM.setTitle(Screen.DrawerScreens.Account.title)
             homeMVVM.setScreen(Screen.DrawerScreens.Account)
             AccountUI(
+                navHostController = navHostController,
                 modifier = modifier
             )
         }
@@ -74,6 +75,25 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
                 texto = "Help and Feedback",
                 navHostController = navHostController,
 
+                modifier = modifier
+            )
+        }
+
+        composable(Screen.BottomNavScreens.Library.broute) {
+            homeMVVM.setTitle(Screen.BottomNavScreens.Library.btitle)
+            homeMVVM.setScreen(Screen.BottomNavScreens.Library)
+            HomeUI(
+                texto = "Library",
+                navHostController = navHostController,
+                modifier = modifier
+            )
+        }
+        composable(Screen.BottomNavScreens.Browse.broute) {
+            homeMVVM.setTitle(Screen.BottomNavScreens.Browse.btitle)
+            homeMVVM.setScreen(Screen.BottomNavScreens.Browse)
+            HomeUI(
+                texto = "Browse",
+                navHostController = navHostController,
                 modifier = modifier
             )
         }

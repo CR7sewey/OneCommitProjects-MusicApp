@@ -1,5 +1,6 @@
 package com.mike.musicapp.account
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.mike.musicapp.R
 import com.mike.musicapp.common.modules.Icons
 
 @Composable
-fun AccountUI(modifier: Modifier = Modifier) {
+fun AccountUI(navHostController: NavHostController, modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
@@ -77,7 +79,9 @@ fun AccountUI(modifier: Modifier = Modifier) {
         ) {
 
             Row(
-
+                modifier = modifier.clickable {
+                    navHostController.navigate("library")
+                }
 
             ) {
 
