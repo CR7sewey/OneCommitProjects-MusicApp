@@ -32,8 +32,8 @@ val screens = listOf(
 
 val bottomNavIcons = listOf(
     Screen.BottomNavScreens.Home,
+    Screen.BottomNavScreens.Browse,
     Screen.BottomNavScreens.Library,
-    Screen.BottomNavScreens.Browse
 )
 
 object Icons {

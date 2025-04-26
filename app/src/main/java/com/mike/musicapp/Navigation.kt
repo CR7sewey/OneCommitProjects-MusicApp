@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
 import com.mike.musicapp.account.AccountUI
+import com.mike.musicapp.browse.BrowseUI
 import com.mike.musicapp.common.modules.Screen
 import com.mike.musicapp.home.HomeMVVM
 import com.mike.musicapp.home.HomeUI
@@ -91,7 +92,7 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
         composable(Screen.BottomNavScreens.Browse.broute) {
             homeMVVM.setTitle(Screen.BottomNavScreens.Browse.btitle)
             homeMVVM.setScreen(Screen.BottomNavScreens.Browse)
-            HomeUI(
+            BrowseUI(
                 texto = "Browse",
                 navHostController = navHostController,
                 modifier = modifier
