@@ -36,6 +36,34 @@ val bottomNavIcons = listOf(
     Screen.BottomNavScreens.Library,
 )
 
+val libraryItems = listOf(
+    LibraryItems(
+        id = "1",
+        name = "Playlist",
+        imageUrl = R.drawable.baseline_queue_music_24
+    ),
+    LibraryItems(
+        id = "2",
+        name = "Artists",
+        imageUrl = R.drawable.baseline_mic_24
+    ),
+    LibraryItems(
+        id = "3",
+        name = "Albums",
+        imageUrl = R.drawable.baseline_album_24
+    ),
+    LibraryItems(
+        id = "4",
+        name = "Songs",
+        imageUrl = R.drawable.baseline_mic_24
+    ),
+    LibraryItems(
+        id = "5",
+        name = "Genre",
+        imageUrl = R.drawable.baseline_style_24
+    ),
+)
+
 object Icons {
     val icons = listOf(
         R.drawable.baseline_settings_24,

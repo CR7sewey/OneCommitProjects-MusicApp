@@ -17,6 +17,7 @@ import com.mike.musicapp.browse.BrowseUI
 import com.mike.musicapp.common.modules.Screen
 import com.mike.musicapp.home.HomeMVVM
 import com.mike.musicapp.home.HomeUI
+import com.mike.musicapp.library.LibraryUI
 import com.mike.musicapp.subscription.SubscriptionUI
 
 @Composable
@@ -83,9 +84,7 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
         composable(Screen.BottomNavScreens.Library.broute) {
             homeMVVM.setTitle(Screen.BottomNavScreens.Library.btitle)
             homeMVVM.setScreen(Screen.BottomNavScreens.Library)
-            HomeUI(
-                texto = "Library",
-                navHostController = navHostController,
+            LibraryUI(
                 modifier = modifier
             )
         }
