@@ -12,9 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
+import com.mike.musicapp.account.AccountUI
 import com.mike.musicapp.common.modules.Screen
 import com.mike.musicapp.home.HomeMVVM
 import com.mike.musicapp.home.HomeUI
+import com.mike.musicapp.subscription.SubscriptionUI
 
 @Composable
 fun Navigation(navHostController: NavHostController = rememberNavController(), paddingValues: PaddingValues, modifier: Modifier = Modifier) {
@@ -35,22 +37,14 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
         composable(Screen.DrawerScreens.Account.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.Account.title)
             homeMVVM.setScreen(Screen.DrawerScreens.Account)
-            HomeUI(
-                texto = "Account",
-                navHostController = navHostController,
-
+            AccountUI(
                 modifier = modifier
             )
         }
         composable(Screen.DrawerScreens.Subscription.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.Subscription.title)
             homeMVVM.setScreen(Screen.DrawerScreens.Subscription)
-            HomeUI(
-                texto = "Subscription",
-                navHostController = navHostController,
-
-                modifier = modifier
-            )
+            SubscriptionUI(modifier = modifier)
         }
         composable(Screen.DrawerScreens.AddAccount.droute) {
             homeMVVM.setTitle(Screen.DrawerScreens.AddAccount.title)
