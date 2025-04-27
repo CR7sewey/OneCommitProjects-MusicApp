@@ -164,19 +164,19 @@ fun DetailedDrawerExample2(
     // val isSelected = remember { mutableStateOf(homeMVVM.title.value) } it wont work with the dialog, only would change onItemClicked this state is not a state of a viewmodel
     var isSelected = homeMVVM.title // already a state of a viewmodel
 
-    fun onItemClicked(item: Screen.DrawerScreens) {
+    fun onItemClicked(item: Screen) {
         // isSelected.value = item.title
-        if (item.droute == Screen.DrawerScreens.AddAccount.droute) {
+        if (item.route == Screen.DrawerScreens.AddAccount.droute) {
             // open dialog
             openDialog.value = true
         }
-        else navHostController.navigate(item.droute)
+        else navHostController.navigate(item.route)
         scope.launch {
             scaffoldState.drawerState.close()
         }
     }
 
-    fun selected(item: Screen.DrawerScreens): Boolean {
+    fun selected(item: Screen): Boolean {
         return isSelected.value == item.title
     }
             ModalDrawerSheet {
@@ -225,6 +225,14 @@ fun DetailedDrawerExample2(
                         icon = Screen.DrawerScreens.Home.icon?.let { painterResource(id = it) }!!,
                         onItemClicked = { /* Handle click */
                             onItemClicked(Screen.DrawerScreens.Home)
+                        }
+                    )
+                    DrawerItem(
+                        selected = selected(Screen.BottomNavScreens.Library),
+                        label = "Library",
+                        icon = Screen.BottomNavScreens.Library.icon?.let { painterResource(id = it) }!!,
+                        onItemClicked = { /* Handle click */
+                            onItemClicked(Screen.BottomNavScreens.Library)
                         }
                     )
 

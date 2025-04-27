@@ -82,14 +82,14 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
         }
 
         composable(Screen.BottomNavScreens.Library.broute) {
-            homeMVVM.setTitle(Screen.BottomNavScreens.Library.btitle)
+            homeMVVM.setTitle(Screen.BottomNavScreens.Library.title)
             homeMVVM.setScreen(Screen.BottomNavScreens.Library)
             LibraryUI(
                 modifier = modifier
             )
         }
         composable(Screen.BottomNavScreens.Browse.broute) {
-            homeMVVM.setTitle(Screen.BottomNavScreens.Browse.btitle)
+            homeMVVM.setTitle(Screen.BottomNavScreens.Browse.title)
             homeMVVM.setScreen(Screen.BottomNavScreens.Browse)
             BrowseUI(
                 texto = "Browse",

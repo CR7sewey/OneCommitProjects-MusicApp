@@ -5,10 +5,21 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -23,9 +34,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,9 +63,13 @@ import com.mike.musicapp.home.HomeMVVM
 import com.mike.musicapp.ui.theme.MusicAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import com.mike.musicapp.common.modules.bottomModalItems
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -59,11 +78,22 @@ class MainActivity : ComponentActivity() {
                 val navHostController = rememberNavController()
                 val scaffoldState: ScaffoldState = rememberScaffoldState()
                 val scope: CoroutineScope = rememberCoroutineScope()
+                val bottomSheetScaffoldState = rememberModalBottomSheetState(
+                    //intialValue = ModalBottomSheetValue.Hidden,
+                    skipPartiallyExpanded = false,
+                    confirmValueChange = { newState ->
+                        //newState != ModalBottomSheetValue.HalfExpanded
+                        true
+                    }
+                )
                 val homeMVVM = viewModel<HomeMVVM>()
                 var openDialog = remember { mutableStateOf(false) }
+                var showBottomSheet by remember { mutableStateOf(false) }
 
                 Scaffold(
-                    topBar = { TopBar(scaffoldState, scope, navHostController, homeMVVM.screen.value.title) },
+                    topBar = { TopBar(scaffoldState, scope, navHostController, homeMVVM.screen.value.title, {
+                        showBottomSheet = !showBottomSheet
+                    }) },
                     scaffoldState = scaffoldState,
                     drawerContent = {
                         DetailedDrawerExample2(
@@ -96,6 +126,15 @@ class MainActivity : ComponentActivity() {
                             dialogOpen = openDialog
                         )
                     }
+                    if (showBottomSheet) {
+                        BottomModal(
+                            onDismissRequest = {
+                                showBottomSheet = false
+                            },
+                            bottomSheetScaffoldState = bottomSheetScaffoldState,
+                            modifier = Modifier
+                        )
+                    }
                 }
             }
         }
@@ -109,6 +148,7 @@ fun TopBar(
     scope: CoroutineScope = rememberCoroutineScope(),
     navHostController: NavHostController,
     title: String = "Home",
+    showBottomSheet: () -> Unit,
     modifier: Modifier = Modifier) {
 
         //val route by remember { mutableStateOf(navHostController.graph.route) }
@@ -149,7 +189,7 @@ fun TopBar(
                     modifier = Modifier.padding(start = 4.dp),
                 ) {
                     Icon(
-                        imageVector = Icons.Default.AccountCircle,
+                        painter = painterResource(id = R.drawable.baseline_menu_24),
                         contentDescription = "Profile",
                         tint = colorResource(id = R.color.white)
                     )
@@ -157,7 +197,9 @@ fun TopBar(
             },
             actions = {
                 IconButton(
-                    onClick = { },
+                    onClick = {
+                        showBottomSheet.invoke()
+                    },
                     modifier = Modifier.padding(end = 4.dp),
                 ) {
                     Icon(
@@ -227,4 +269,57 @@ fun BottomNavigationBar(navController: NavHostController, modifier: Modifier = M
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomModal(onDismissRequest: () -> Unit, bottomSheetScaffoldState: SheetState, modifier: Modifier = Modifier) {
 
+        ModalBottomSheet(
+            onDismissRequest = {
+                onDismissRequest.invoke()
+            },
+            sheetState = bottomSheetScaffoldState,
+            modifier = modifier.fillMaxHeight(0.3f),
+        ) {
+            // Main content of the screen
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                )
+                 {
+                bottomModalItems.forEach { item ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onDismissRequest.invoke()
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        val icon = item.icon ?: 0
+                        Icon(
+                            painter = painterResource(id = icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 36.dp)
+                                .size(24.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = item.title,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                    }
+
+                }
+            }
+        }
+
+}

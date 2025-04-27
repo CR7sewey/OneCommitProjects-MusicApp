@@ -19,6 +19,12 @@ sealed class Screen(val route: String, val title: String = "") {
         object Browse : BottomNavScreens("browse", "Browse", R.drawable.baseline_apps_24)
     }
 
+    sealed class BottomModal(val mroute: String, val mtitle: String = "", @DrawableRes val icon: Int? = null) : Screen(mroute, mtitle) {
+        object Settings : BottomModal("settings", "Settings", R.drawable.baseline_settings_24)
+        object Share : BottomModal("share", "Share", R.drawable.baseline_share_24)
+        object HelpAndFeedback : BottomModal("helpAndFeedback", "Help and Feedback", R.drawable.baseline_help_center_24)
+    }
+
 }
 
 val screens = listOf(
@@ -62,6 +68,12 @@ val libraryItems = listOf(
         name = "Genre",
         imageUrl = R.drawable.baseline_style_24
     ),
+)
+
+val bottomModalItems = listOf(
+    Screen.BottomModal.Settings,
+    Screen.BottomModal.Share,
+    Screen.BottomModal.HelpAndFeedback
 )
 
 object Icons {
