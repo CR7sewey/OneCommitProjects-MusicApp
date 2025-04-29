@@ -25,6 +25,15 @@ sealed class Screen(val route: String, val title: String = "") {
         object HelpAndFeedback : BottomModal("helpAndFeedback", "Help and Feedback", R.drawable.baseline_help_center_24)
     }
 
+    sealed class CategoriesScreen(val croute: String, val ctitle: String = "", @DrawableRes val icon: Int? = null) : Screen(croute, ctitle) {
+        object Artists : CategoriesScreen("artists", "Artists") {
+            fun createRoute(id: String): String {
+                return "$croute/$id"
+            }
+        }
+
+    }
+
 }
 
 val screens = listOf(

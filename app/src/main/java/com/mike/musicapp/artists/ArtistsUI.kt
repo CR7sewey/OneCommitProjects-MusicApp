@@ -1,5 +1,6 @@
-package com.mike.musicapp.browse
+package com.mike.musicapp.artists
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,82 +11,80 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import com.mike.musicapp.browse.HomeItem
+import com.mike.musicapp.browse.listScroll
+import com.mike.musicapp.common.modules.ArtistDTO
+import com.mike.musicapp.common.modules.ArtistsDTO
 import com.mike.musicapp.common.modules.Category
 import com.mike.musicapp.common.modules.Screen
-
-
-val listScroll = listOf<Category>(
-    Category(name = "Hits", imageUrl = com.mike.musicapp.R.drawable.hiphop),
-    Category(name = "Jazz", imageUrl = com.mike.musicapp.R.drawable.jazz),
-    Category(name = "Rock", imageUrl = com.mike.musicapp.R.drawable.rock),
-    Category(name = "Workout", imageUrl = com.mike.musicapp.R.drawable.workout),
-    Category(name = "Pop", imageUrl = com.mike.musicapp.R.drawable.hiphop),
-    Category(name = "Country", imageUrl = com.mike.musicapp.R.drawable.country),
-    Category(name = "R&B", imageUrl = com.mike.musicapp.R.drawable.rb),
-    Category(name = "Artists", imageUrl = com.mike.musicapp.R.drawable.artists, categoryRoute = Screen.CategoriesScreen.Artists.croute),
-
-    ).groupBy { it -> it.name[0] }
-/*
-"Chill",
-"Classical",
-"Country",
-"R&B",
-*/
-
+import kotlin.collections.iterator
 
 @Composable
-fun BrowseUI(texto: String, navHostController: NavHostController, modifier: Modifier = Modifier) {
+fun ArtistsUI(nvaHostController: NavHostController, artistsMVVM: ArtistsMVVM, modifier: Modifier = Modifier) {
 
+
+    val currentArtists = artistsMVVM.artists.collectAsState().value
+    Log.d("ArtistsUI", "Current Artists: ${currentArtists.toString()}")
+    ArtistsUIContent(
+        currentArtists = currentArtists,
+        navHostController = nvaHostController,
+        modifier = modifier
+    )
+
+}
+
+@Composable
+fun ArtistsUIContent(currentArtists: ArtistsDTO?, navHostController: NavHostController, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .padding(8.dp).fillMaxSize()
     ) {
 
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = modifier
-                        .padding(8.dp)
-                        .fillMaxSize(),
-                ) {
-                    for (i in listScroll) {
-                        val item: List<Category> = i.value
-                        items(item) { index ->
-                            HomeItem(
-                                item = index,
-                                modifier = modifier.clickable {
-                                    if (index.categoryRoute.isNotEmpty()) {
-                                        navHostController.navigate(index.categoryRoute)
-                                    }
-                                }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = modifier
+                .padding(8.dp)
+                .fillMaxSize(),
+        ) {
+            currentArtists?.artists?.let { it ->
+                items(it) { index ->
+                    HomeItem(
+                        item = index,
+                        modifier = modifier.clickable {
+                            Log.d("ArtistsUI", "Item clicked: ${index.name}")
+                            // Handle item click
+                            navHostController.navigate(
+                                //Screen.CategoriesScreen.Artists.croute + "/${index.id}"
+                                Screen.CategoriesScreen.Artists.createRoute(index.id)
                             )
                         }
-                    }
+                    )
                 }
+            }
+        }
 
     }
-
-
 }
 
+
 @Composable
-fun HomeItem(item: Category, modifier: Modifier = Modifier) {
+fun HomeItem(item: ArtistDTO, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .padding(bottom = 12.dp)
@@ -109,8 +108,8 @@ fun HomeItem(item: Category, modifier: Modifier = Modifier) {
                 modifier = modifier
                     .fillMaxSize()
             ) {
-                Image(
-                    painter = androidx.compose.ui.res.painterResource(id = item.imageUrl),
+                AsyncImage(
+                    model = item.images[0].url,
                     contentDescription = "Album Art",
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     modifier = modifier.matchParentSize()
@@ -120,9 +119,9 @@ fun HomeItem(item: Category, modifier: Modifier = Modifier) {
         Spacer(modifier = modifier.height(4.dp))
         Text(
             text = item.name,
-            color = androidx.compose.ui.graphics.Color.Black,
+            color = Color.Black,
             maxLines = 2,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

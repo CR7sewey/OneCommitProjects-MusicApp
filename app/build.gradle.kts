@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -16,6 +18,25 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = project.rootProject.file("local.properties")
+        val properties = Properties()
+        properties.load(localProperties.inputStream())
+
+        val apiKey = properties.getProperty("CLIENT_SECRET")
+        println(apiKey)
+        buildConfigField(
+            type = "String",
+            name = "CLIENT_SECRET",
+            value = apiKey
+        )
+        val apiID = properties.getProperty("CLIENT_ID")
+        println(apiKey)
+        buildConfigField(
+            type = "String",
+            name = "CLIENT_ID",
+            value = apiID
+        )
     }
 
     buildTypes {
@@ -36,6 +57,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -55,7 +77,15 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.0-alpha08")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.0-alpha08")
 
+    // RETROFIT
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

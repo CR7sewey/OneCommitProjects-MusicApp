@@ -8,11 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
+import androidx.navigation.navArgument
 import com.mike.musicapp.account.AccountUI
+import com.mike.musicapp.artists.ArtistUI
+import com.mike.musicapp.artists.ArtistsMVVM
+import com.mike.musicapp.artists.ArtistsUI
 import com.mike.musicapp.browse.BrowseUI
 import com.mike.musicapp.common.modules.Screen
 import com.mike.musicapp.home.HomeMVVM
@@ -22,7 +27,7 @@ import com.mike.musicapp.subscription.SubscriptionUI
 
 @Composable
 fun Navigation(navHostController: NavHostController = rememberNavController(), paddingValues: PaddingValues, modifier: Modifier = Modifier) {
-
+    val artistsMVVM = viewModel<ArtistsMVVM>()
     val homeMVVM = viewModel<HomeMVVM>()
     val navGraph = navHostController.createGraph(
         startDestination = Screen.DrawerScreens.Home.droute
@@ -96,6 +101,30 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
                 navHostController = navHostController,
                 modifier = modifier
             )
+        }
+
+        composable(Screen.CategoriesScreen.Artists.croute) {
+            homeMVVM.setTitle(Screen.CategoriesScreen.Artists.ctitle)
+            homeMVVM.setScreen(Screen.CategoriesScreen.Artists)
+            ArtistsUI(
+                nvaHostController = navHostController,
+                artistsMVVM = artistsMVVM,
+                modifier = modifier
+            )
+        }
+
+        composable(Screen.CategoriesScreen.Artists.createRoute("{id}"), arguments = listOf(navArgument("id"){ type=
+            NavType.StringType})) { backStackEntry ->
+            homeMVVM.setTitle(Screen.CategoriesScreen.Artists.ctitle)
+            homeMVVM.setScreen(Screen.CategoriesScreen.Artists)
+            val id = requireNotNull(backStackEntry.arguments?.getString("id"))
+            ArtistUI(
+                id,
+                artistsMVVM = artistsMVVM,
+                navHostController = navHostController,
+                modifier = modifier
+            )
+
         }
 
     }
