@@ -1,6 +1,8 @@
 package com.mike.musicapp.common.api
 
 import com.mike.musicapp.BuildConfig
+import com.mike.musicapp.MusicApp
+import com.mike.musicapp.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
@@ -18,7 +20,7 @@ object Retrofit {
     private val httpClient: OkHttpClient
         get() {
             val clientBuilder = OkHttpClient.Builder()
-            val token = "BQBYqznrBQjm7-eiAq1uw3VvRXA_W8MuKScxR5P57fAke1WjAMw44MrvCi-FGQVXzxcgKfpzm-AcFDKb2DNEUuTkuicL2cwyziU5WkHlXQnyQurER0L4yj5l5fqp0JsGHmoeYcyzPFE"
+            val token = Singleton.getToken()
 
             clientBuilder.addInterceptor { it ->
                 val original: Request = it.request()
