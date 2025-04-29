@@ -50,7 +50,7 @@ class HomeMVVM: ViewModel() {
     }
 
     init {
-        getToken()
+        //getToken()
         Log.d("TAG", "init: ${token.value}")
         fetchCategories()
     }
@@ -74,7 +74,7 @@ class HomeMVVM: ViewModel() {
         }
     }
 
-    private fun getToken() {
+    /*private fun getToken() {
         viewModelScope.launch(Dispatchers.IO) {
 
             if (token.value.isNotEmpty()) {
@@ -100,6 +100,6 @@ class HomeMVVM: ViewModel() {
                 }
 
         }
-    }
+    }*/
 
 }

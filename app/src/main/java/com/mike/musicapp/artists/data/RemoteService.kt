@@ -1,5 +1,6 @@
 package com.mike.musicapp.artists.data
 
+import com.mike.musicapp.common.modules.ArtistAlbumsDTO
 import com.mike.musicapp.common.modules.ArtistDTO
 import com.mike.musicapp.common.modules.ArtistsDTO
 import retrofit2.Response
@@ -13,4 +14,7 @@ interface RemoteService {
 
     @GET("artists/{id}")
     suspend fun getArtistById(@Path("id") id: String): Response<ArtistDTO>
+
+    @GET("artists/{id}/albums?include_groups=single&market=PT&limit=10&offset=1")
+    suspend fun getArtistAlbums(@Path("id") id: String): Response<ArtistAlbumsDTO>
 }

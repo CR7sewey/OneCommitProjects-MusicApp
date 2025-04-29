@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.mike.musicapp.artists.data.RemoteRepository
 import com.mike.musicapp.artists.data.RemoteService
 import com.mike.musicapp.common.api.Retrofit
+import com.mike.musicapp.common.modules.ArtistAlbumsDTO
 import com.mike.musicapp.common.modules.ArtistDTO
 import com.mike.musicapp.common.modules.ArtistsDTO
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,9 @@ class ArtistsMVVM: ViewModel() {
 
     private val _individualArtist : MutableStateFlow<ArtistDTO?> = MutableStateFlow(null)
     val individualArtist: StateFlow<ArtistDTO?> = _individualArtist
+
+    private val _artistAlbums : MutableStateFlow<ArtistAlbumsDTO?> = MutableStateFlow(null)
+    val artistAlbums: StateFlow<ArtistAlbumsDTO?> = _artistAlbums
 
     init {
         getArtists()
@@ -49,6 +53,19 @@ class ArtistsMVVM: ViewModel() {
             Log.d("ArtistsMVVM", "Result: ${result.getOrNull().toString()}")
             if (result.isSuccess) {
                 _individualArtist.value = result.getOrNull()
+            } else {
+                // Handle error
+                _individualArtist.value = null
+            }
+        }
+    }
+
+    fun getArtistAlbums(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = remoteRepository.getArtistAlbums(id)
+            Log.d("ArtistsMVVM", "Result: ${result.getOrNull().toString()}")
+            if (result.isSuccess) {
+                _artistAlbums.value = result.getOrNull()
             } else {
                 // Handle error
                 _individualArtist.value = null
