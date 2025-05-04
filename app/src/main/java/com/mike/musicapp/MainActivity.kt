@@ -96,71 +96,46 @@ class MainActivity : ComponentActivity() {
                 var openDialog = remember { mutableStateOf(false) }
                 var showBottomSheet by remember { mutableStateOf(false) }
 
-                if (homeMVVM.title.value == "EntryScreen") {
-                        var currentContext = LocalContext.current
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            if (currentContext != null) {
-                                Log.d("AQUI", currentContext.toString())
-                                homeMVVM.setTitle(Screen.DrawerScreens.Home.title)
-                                //navHostController.navigate(route = Screen.DrawerScreens.Home.droute)
-                            }
-                        }, 4000)
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                val showTopBottomDrawerBar = remember { mutableStateOf(false) }
 
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-
-                            modifier = Modifier.fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.3f))
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.logo),
-                                contentDescription = "Onboarding Image",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(260.dp)
-                                    .padding(16.dp).clickable {
-                                        homeMVVM.setTitle(Screen.DrawerScreens.Home.title)
-                                        //navHostController.navigate(route = Screen.DrawerScreens.Home.droute)
-
-                                    }
-                            )
-                        }
-                    }
-
-                    }
-                if (!homeMVVM.title.value.contains("EntryScreen"))  {
                 Scaffold(
                     topBar = {
-                        TopBar(
-                            scaffoldState,
-                            scope,
-                            navHostController,
-                            homeMVVM.screen.value.title,
-                            {
-                                showBottomSheet = !showBottomSheet
-                            })
+                        if (showTopBottomDrawerBar.value) {
+                            TopBar(
+                                scaffoldState,
+                                scope,
+                                navHostController,
+                                homeMVVM.screen.value.title,
+                                {
+                                    showBottomSheet = !showBottomSheet
+                                })
+                        }
                     },
                     scaffoldState = scaffoldState,
                     drawerContent = {
-                        DetailedDrawerExample2(
-                            scaffoldState = scaffoldState,
-                            scope = scope,
-                            navHostController = navHostController,
-                            openDialog = openDialog
-                        )
+                        if (showTopBottomDrawerBar.value) {
+                            DetailedDrawerExample2(
+                                scaffoldState = scaffoldState,
+                                scope = scope,
+                                navHostController = navHostController,
+                                openDialog = openDialog
+                            )
+                        }
                     },
                     bottomBar = {
-                        BottomNavigationBar(
-                            navController = navHostController,
-                            modifier = Modifier
-                        )
+                        if (showTopBottomDrawerBar.value) {
+                            BottomNavigationBar(
+                                navController = navHostController,
+                                modifier = Modifier
+                            )
+                        }
                     },
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
 
-                        Navigation(navHostController, innerPadding, modifier = Modifier)
+                        Navigation(navHostController,  showTopBottomDrawerBarFunction = {
+                            showTopBottomDrawerBar.value = true
+                        },innerPadding, modifier = Modifier)
                         if (openDialog.value) {
                             DialogUI(
                                 onDismissRequest = {
@@ -187,7 +162,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
+
     }
 }
 

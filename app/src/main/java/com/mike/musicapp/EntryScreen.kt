@@ -54,7 +54,7 @@ private fun EntryContent(navHostController: NavHostController, modifier: Modifie
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
 
-        modifier = modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.8f))) {
+        modifier = modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.9f))) {
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Onboarding Image",

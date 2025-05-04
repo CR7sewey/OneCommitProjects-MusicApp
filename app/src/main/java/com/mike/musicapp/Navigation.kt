@@ -8,6 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -34,13 +35,16 @@ import com.mike.musicapp.library.LibraryUI
 import com.mike.musicapp.subscription.SubscriptionUI
 
 @Composable
-fun Navigation(navHostController: NavHostController = rememberNavController(), paddingValues: PaddingValues, modifier: Modifier = Modifier) {
+fun Navigation(navHostController: NavHostController = rememberNavController(), showTopBottomDrawerBarFunction : () -> Unit, paddingValues: PaddingValues, modifier: Modifier = Modifier) {
     val artistsMVVM = viewModel<ArtistsMVVM>()
     val homeMVVM = viewModel<HomeMVVM>()
     val navGraph = navHostController.createGraph(
-        startDestination = Screen.DrawerScreens.Home.droute //Screen.DrawerScreens.Home.droute
+        startDestination = "entry" //Screen.DrawerScreens.Home.droute
     ) {
-        composable(route = "entry") {
+        composable(route = "entry", exitTransition =
+            {
+                return@composable fadeOut(tween(700))
+            }) {
             homeMVVM.setTitle("EntryScreen")
             EntryScreen(
                 navHostController = navHostController,
@@ -49,15 +53,22 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
         }
 
         composable(Screen.DrawerScreens.Home.droute, enterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Up,
-                animationSpec = tween(1000, easing = LinearEasing)
-            )
+            if (initialState.destination.route == "entry") {
+                return@composable slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Up,
+                    animationSpec = tween(1000, easing = LinearEasing)
+                )
+
+            } else {
+                return@composable null
+            }
+
            /* fadeIn(tween(700))
             scaleIn(spring(Spring.DampingRatioHighBouncy))
             slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(700))
             expandIn(tween(700, easing = LinearEasing))*/
         }) {
+            showTopBottomDrawerBarFunction.invoke()
             homeMVVM.setTitle(Screen.DrawerScreens.Home.title)
             homeMVVM.setScreen(Screen.DrawerScreens.Home)
             HomeUI(
