@@ -24,7 +24,7 @@ data class ImageDTO(
     val width: Int
 )
 
-// ---------
+// --------- Albums ---------
 
 data class ArtistAlbumsDTO(
     val total: Int,
@@ -48,6 +48,25 @@ data class AlbumArtistsDTO(
     val href: String,
     val id: String,
     val name: String,
+    val type: String,
+    val uri: String
+)
+
+
+// ----- Tracks -----
+
+data class ArtistTopTracksDTO(
+    val tracks: List<TrackDTO>
+)
+
+data class TrackDTO(
+    val album: AlbumDTO,
+    val artists: List<AlbumArtistsDTO>,
+    val id: String,
+    val name: String,
+    val popularity: Int,
+    val preview_url: String,
+    val track_number: Int,
     val type: String,
     val uri: String
 )

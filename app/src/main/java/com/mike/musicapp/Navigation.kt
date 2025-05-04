@@ -1,6 +1,14 @@
 package com.mike.musicapp
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -30,9 +38,26 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), p
     val artistsMVVM = viewModel<ArtistsMVVM>()
     val homeMVVM = viewModel<HomeMVVM>()
     val navGraph = navHostController.createGraph(
-        startDestination = Screen.DrawerScreens.Home.droute
+        startDestination = Screen.DrawerScreens.Home.droute //Screen.DrawerScreens.Home.droute
     ) {
-        composable(Screen.DrawerScreens.Home.droute) {
+        composable(route = "entry") {
+            homeMVVM.setTitle("EntryScreen")
+            EntryScreen(
+                navHostController = navHostController,
+                modifier = modifier
+            )
+        }
+
+        composable(Screen.DrawerScreens.Home.droute, enterTransition = {
+            return@composable slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Up,
+                animationSpec = tween(1000, easing = LinearEasing)
+            )
+           /* fadeIn(tween(700))
+            scaleIn(spring(Spring.DampingRatioHighBouncy))
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(700))
+            expandIn(tween(700, easing = LinearEasing))*/
+        }) {
             homeMVVM.setTitle(Screen.DrawerScreens.Home.title)
             homeMVVM.setScreen(Screen.DrawerScreens.Home)
             HomeUI(

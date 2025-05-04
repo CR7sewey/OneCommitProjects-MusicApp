@@ -8,6 +8,7 @@ import com.mike.musicapp.artists.data.RemoteService
 import com.mike.musicapp.common.api.Retrofit
 import com.mike.musicapp.common.modules.ArtistAlbumsDTO
 import com.mike.musicapp.common.modules.ArtistDTO
+import com.mike.musicapp.common.modules.ArtistTopTracksDTO
 import com.mike.musicapp.common.modules.ArtistsDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,9 @@ class ArtistsMVVM: ViewModel() {
 
     private val _artistAlbums : MutableStateFlow<ArtistAlbumsDTO?> = MutableStateFlow(null)
     val artistAlbums: StateFlow<ArtistAlbumsDTO?> = _artistAlbums
+
+    private val _artistTopTracks : MutableStateFlow<ArtistTopTracksDTO?> = MutableStateFlow(null)
+    val artistTopTracks: StateFlow<ArtistTopTracksDTO?> = _artistTopTracks
 
     init {
         getArtists()
@@ -66,6 +70,19 @@ class ArtistsMVVM: ViewModel() {
             Log.d("ArtistsMVVM", "Result: ${result.getOrNull().toString()}")
             if (result.isSuccess) {
                 _artistAlbums.value = result.getOrNull()
+            } else {
+                // Handle error
+                _individualArtist.value = null
+            }
+        }
+    }
+
+    fun getArtistTopTracks(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = remoteRepository.getArtistTopTracks(id)
+            Log.d("ArtistsMVVM", "Result: ${result.getOrNull().toString()}")
+            if (result.isSuccess) {
+                _artistTopTracks.value = result.getOrNull()
             } else {
                 // Handle error
                 _individualArtist.value = null

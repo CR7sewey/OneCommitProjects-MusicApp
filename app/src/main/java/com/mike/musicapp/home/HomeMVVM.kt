@@ -24,7 +24,7 @@ class HomeMVVM: ViewModel() {
             remoteService = Retrofit.retrofit.create(RemoteService::class.java)
         )
 
-    private val _title = mutableStateOf(Screen.DrawerScreens.Home.title)
+    private val _title = mutableStateOf("EntryScreen")
     val title: State<String> = _title
 
     private val _screen = mutableStateOf<Screen>(Screen.DrawerScreens.Home)
