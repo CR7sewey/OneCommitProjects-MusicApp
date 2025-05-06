@@ -43,7 +43,9 @@ fun Navigation(navHostController: NavHostController = rememberNavController(), s
     ) {
         composable(route = "entry", exitTransition =
             {
-                return@composable fadeOut(tween(700))
+                return@composable slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Start
+                )
             }) {
             homeMVVM.setTitle("EntryScreen")
             EntryScreen(

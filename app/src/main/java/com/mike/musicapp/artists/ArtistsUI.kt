@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.mike.musicapp.browse.HomeItem
-import com.mike.musicapp.browse.listScroll
+//import com.mike.musicapp.browse.listScroll
 import com.mike.musicapp.common.modules.ArtistDTO
 import com.mike.musicapp.common.modules.ArtistsDTO
 import com.mike.musicapp.common.modules.Category

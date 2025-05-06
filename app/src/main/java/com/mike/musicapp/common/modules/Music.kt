@@ -20,6 +20,14 @@ data class Category(
     val categoryRoute: String = "",
 )
 
+data class Category2(
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
+    val imageUrl: String = "",
+    val categoryRoute: String = "",
+)
+
 data class LibraryItems(
     val id: String = "",
     val name: String = "",
