@@ -17,6 +17,15 @@ data class Category(
     val name: String = "",
     val description: String = "",
     @DrawableRes val imageUrl: Int = 0,
+    val categoryRoute: String = "",
+)
+
+data class Category2(
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
+    val imageUrl: String = "",
+    val categoryRoute: String = "",
 )
 
 data class LibraryItems(

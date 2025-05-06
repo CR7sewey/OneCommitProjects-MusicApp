@@ -1,10 +1,14 @@
 package com.mike.musicapp
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,6 +70,8 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import com.mike.musicapp.common.modules.bottomModalItems
 
 class MainActivity : ComponentActivity() {
@@ -90,54 +96,73 @@ class MainActivity : ComponentActivity() {
                 var openDialog = remember { mutableStateOf(false) }
                 var showBottomSheet by remember { mutableStateOf(false) }
 
+                val showTopBottomDrawerBar = remember { mutableStateOf(false) }
+
                 Scaffold(
-                    topBar = { TopBar(scaffoldState, scope, navHostController, homeMVVM.screen.value.title, {
-                        showBottomSheet = !showBottomSheet
-                    }) },
+                    topBar = {
+                        if (showTopBottomDrawerBar.value) {
+                            TopBar(
+                                scaffoldState,
+                                scope,
+                                navHostController,
+                                homeMVVM.screen.value.title,
+                                {
+                                    showBottomSheet = !showBottomSheet
+                                })
+                        }
+                    },
                     scaffoldState = scaffoldState,
                     drawerContent = {
-                        DetailedDrawerExample2(
-                            scaffoldState = scaffoldState,
-                            scope = scope,
-                            navHostController = navHostController,
-                            openDialog = openDialog
-                        )
+                        if (showTopBottomDrawerBar.value) {
+                            DetailedDrawerExample2(
+                                scaffoldState = scaffoldState,
+                                scope = scope,
+                                navHostController = navHostController,
+                                openDialog = openDialog
+                            )
+                        }
                     },
                     bottomBar = {
-                        BottomNavigationBar(
-                            navController = navHostController,
-                            modifier = Modifier
-                        )
+                        if (showTopBottomDrawerBar.value) {
+                            BottomNavigationBar(
+                                navController = navHostController,
+                                modifier = Modifier
+                            )
+                        }
                     },
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    Navigation(navHostController, innerPadding, modifier = Modifier)
-                    if (openDialog.value) {
-                        DialogUI(
-                            onDismissRequest = {
-                                openDialog.value = false
-                                navHostController.navigate(Screen.DrawerScreens.Home.droute)
-                            },
-                            onConfirm = { emailAddress, password ->
-                                Log.d("HomeUI", "Email: $emailAddress, Password: $password")
-                                openDialog.value = false
-                                navHostController.navigate(Screen.DrawerScreens.Home.droute)
-                            },
-                            dialogOpen = openDialog
-                        )
-                    }
-                    if (showBottomSheet) {
-                        BottomModal(
-                            onDismissRequest = {
-                                showBottomSheet = false
-                            },
-                            bottomSheetScaffoldState = bottomSheetScaffoldState,
-                            modifier = Modifier
-                        )
+
+                        Navigation(navHostController,  showTopBottomDrawerBarFunction = {
+                            showTopBottomDrawerBar.value = true
+                        },innerPadding, modifier = Modifier)
+                        if (openDialog.value) {
+                            DialogUI(
+                                onDismissRequest = {
+                                    openDialog.value = false
+                                    navHostController.navigate(Screen.DrawerScreens.Home.droute)
+                                },
+                                onConfirm = { emailAddress, password ->
+                                    Log.d("HomeUI", "Email: $emailAddress, Password: $password")
+                                    openDialog.value = false
+                                    navHostController.navigate(Screen.DrawerScreens.Home.droute)
+                                },
+                                dialogOpen = openDialog
+                            )
+                        }
+                        if (showBottomSheet) {
+                            BottomModal(
+                                onDismissRequest = {
+                                    showBottomSheet = false
+                                },
+                                bottomSheetScaffoldState = bottomSheetScaffoldState,
+                                modifier = Modifier
+                            )
+                        }
                     }
                 }
             }
-        }
+
     }
 }
 
